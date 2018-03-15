@@ -10,10 +10,10 @@ pip install tqdm requests
 ```
 2) Run the script
 ```
-python download.py ./data
+python download.py ./
 ```
-where `./data` is the directory where you wish the data to be saved.
+where `./` is the directory where you wish the data to be saved.
 
 
 # Remark
-Script tested with python 3.5
+Script tested with python 3.6. Should work with any python 3 version.
