@@ -3,12 +3,17 @@ Python script to download the celebA-HG dataset from google drive
 
 
 # Usage
-1)Install necessary packages
+1) Clone the repository
+```
+git clone https://github.com/nperraud/download-celebA-HQ.git
+cd download-celebA-HQ
+```
+
+2) Install necessary packages
 ```
 pip install tqdm requests
-
 ```
-2) Run the script
+3) Run the script
 ```
 python download.py ./
 ```
