@@ -1,5 +1,5 @@
 # download-celebA-HQ
-Python script to download the celebA-HG dataset from google drive
+Python script to download the celebA-HQ dataset from google drive
 
 
 # Usage
