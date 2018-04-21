@@ -1,10 +1,13 @@
 import tarfile
 import zipfile
 import gzip
-import urllib
 import os
 import hashlib
 import sys
+if sys.version_info[0] > 2:
+    from urllib.request import urlretrieve
+else:
+    from urllib import urlretrieve
 import numpy as np
 from subprocess import Popen
 
@@ -31,10 +34,7 @@ def download(url, target_dir='./data/', filename=None):
     if filename is None:
         filename = url_filename(url)
     filepath = os.path.join(target_dir, filename)
-    if sys.version_info[0] > 2:
-        urllib.request.urlretrieve(url, filepath)
-    else:
-        urllib.urlretrieve(url, filepath)
+    urlretrieve(url, filepath)
     return filepath
 
 
