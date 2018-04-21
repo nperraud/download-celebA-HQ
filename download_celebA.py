@@ -100,11 +100,11 @@ def download_celabA(datasets_dir='datasets'):
     print('Check SHA1 {}'.format(filepath))
     if sha1 != checksum(filepath, 'sha1'):
         raise RuntimeError('Checksum mismatch for %s.' % url)
-    # os.remove(filepath)
 
     print('Extract archive {}'.format(filepath))
     archive_extract(filepath, data_dir)
     print('Done!')
+    os.remove(filepath)
 
     url, sha1 = _PARTITIONS_URL
     print('Downloading {}'.format(url))
@@ -122,7 +122,7 @@ def download_celabA(datasets_dir='datasets'):
             partition = int(partition)
             partitions[partition].append(i)
     train_idxs, val_idxs, test_idxs = map(np.array, partitions)
-    # os.remove(filepath)
+    os.remove(filepath)
     n_imgsd = sum([1 for file in os.listdir(img_dir) if file[-4:] == '.jpg'])
     assert (n_imgsd == n_imgs)
 
@@ -145,7 +145,7 @@ def download_celabA(datasets_dir='datasets'):
             attr_vec = np.array(map(int, fields[1:]))
             attributes.append(attr_vec)
     attributes = np.array(attributes)
-    # os.remove(filepath)
+    os.remove(filepath)
 
     with open(npz_path, 'wb') as f:
         np.savez(
