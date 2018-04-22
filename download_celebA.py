@@ -75,6 +75,9 @@ def archive_extract(filepath, target_dir):
 
 def download_celabA(datasets_dir='datasets'):
 
+    _IMGS_URL = ('https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAAq9krDJxUMh1m0hbbxdnl4a/Img/img_celeba.7z?dl=1',
+        '')
+
     _ALIGNED_IMGS_URL = (
         'https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AADIKlz8PR9zr6Y20qbkunrba/Img/img_align_celeba.zip?dl=1',
         'b7e1990e1f046969bd4e49c6d804b93cd9be1646')
@@ -92,6 +95,21 @@ def download_celabA(datasets_dir='datasets'):
     data_dir = os.path.join(datasets_dir, name)
     npz_path = os.path.join(data_dir, name + '.npz')
     img_dir = os.path.join(data_dir, 'img_align_celeba')
+
+    url, sha1 = _IMGS_URL
+    print('Downloading {}'.format(url))
+    filepath = download(url, datasets_dir)
+    print('Done!')
+    print('Check SHA1 {}'.format(filepath))
+    print(checksum(filepath, 'sha1'))
+    # if sha1 != checksum(filepath, 'sha1'):
+    #     raise RuntimeError('Checksum mismatch for %s.' % url)
+
+    print('Extract archive {}'.format(filepath))
+    archive_extract(filepath, data_dir)
+    print('Done!')
+    os.remove(filepath)
+
 
     url, sha1 = _ALIGNED_IMGS_URL
     print('Downloading {}'.format(url))
@@ -122,7 +140,7 @@ def download_celabA(datasets_dir='datasets'):
             partition = int(partition)
             partitions[partition].append(i)
     train_idxs, val_idxs, test_idxs = map(np.array, partitions)
-    os.remove(filepath)
+    # os.remove(filepath)
     n_imgsd = sum([1 for file in os.listdir(img_dir) if file[-4:] == '.jpg'])
     assert (n_imgsd == n_imgs)
 
@@ -145,7 +163,7 @@ def download_celabA(datasets_dir='datasets'):
             attr_vec = np.array(map(int, fields[1:]))
             attributes.append(attr_vec)
     attributes = np.array(attributes)
-    os.remove(filepath)
+    # os.remove(filepath)
 
     with open(npz_path, 'wb') as f:
         np.savez(
