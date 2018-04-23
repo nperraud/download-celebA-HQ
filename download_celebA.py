@@ -82,7 +82,7 @@ def archive_extract(filepath, target_dir):
         raise ValueError('{} is not a supported archive file.'.format(filepath))
 
 
-def download_celabA(datasets_dir='celeba'):
+def download_celabA(dataset_dir='celeba'):
     # dataset_dir='celeba'
 
     _IMGS_URL = ('https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAAq9krDJxUMh1m0hbbxdnl4a/Img/img_celeba.7z?dl=1',
