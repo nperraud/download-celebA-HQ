@@ -13,7 +13,31 @@ import bz2
 import scipy
 from scipy import ndimage
 import threading
+import traceback
+import sys
+import six.moves.queue as Queue
 
+class ExceptionInfo(object):
+    def __init__(self):
+        self.value = sys.exc_info()[1]
+        self.traceback = traceback.format_exc()
+
+
+class WorkerThread(threading.Thread):
+    def __init__(self, task_queue):
+        threading.Thread.__init__(self)
+        self.task_queue = task_queue
+
+    def run(self):
+        while True:
+            func, args, result_queue = self.task_queue.get()
+            if func is None:
+                break
+            try:
+                result = func(*args)
+            except:
+                result = ExceptionInfo()
+            result_queue.put((result, args))
 
 class ThreadPool(object):
     def __init__(self, num_threads):
