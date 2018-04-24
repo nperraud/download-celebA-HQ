@@ -13,12 +13,13 @@ import bz2
 import scipy
 from scipy import ndimage
 
-
+from multiprocessing.pool import ThreadPool
 
 
 dataset_dir='celeba'
 expected_images = 202599
 delta_dir = 'celebA-HQ'
+num_tasks = 12
 
 celeba_dir = os.path.join(dataset_dir, 'Img/img_celeba')
 print('Loading CelebA from {}'.format(celeba_dir))
@@ -146,10 +147,14 @@ def process_func(idx):
     assert md5.hexdigest() == fields['final_md5'][idx]
     return img
 
-# with ThreadPool(num_threads) as pool:
-    # for img in pool.process_items_concurrently(indices[order].tolist(), process_func=process_func, max_items_in_flight=num_tasks):
+num_threads=num_tasks
+with ThreadPool(num_threads) as pool:
+    for img_num, img in enumerate(pool.process_items_concurrently(indices[order].tolist(), process_func=process_func, max_items_in_flight=num_tasks)):
+        print('Create image number {}'.format(img_num))
+        img = process_func(img_num)
+        np.save(os.path.join(delta_dir, 'imgHQ%05d' % img_num), [img])
 
-for img_num in range(expected_dat):
-    print('Create image number {}'.format(img_num))
-    img = process_func(img_num)
-    np.save(os.path.join(delta_dir, 'imgHQ%05d' % img_num), [img])
+# for img_num in range(expected_dat):
+#     print('Create image number {}'.format(img_num))
+#     img = process_func(img_num)
+#     np.save(os.path.join(delta_dir, 'imgHQ%05d' % img_num), [img])
