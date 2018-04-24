@@ -12,12 +12,12 @@ import base64
 import bz2
 import scipy
 from scipy import ndimage
+import multiprocessing as mp
 
 
 dataset_dir='celeba'
 expected_images = 202599
 delta_dir = 'celebA-HQ'
-num_tasks = 12
 
 celeba_dir = os.path.join(dataset_dir, 'Img/img_celeba')
 print('Loading CelebA from {}'.format(celeba_dir))
@@ -151,6 +151,11 @@ def do_the_work(img_num):
     img = process_func(img_num)
     np.save(os.path.join(delta_dir, 'imgHQ%05d' % img_num), [img])
 
-for img_num in range(expected_dat):
-    do_the_work(img_num)
+# for img_num in range(expected_dat):
+#     do_the_work(img_num)
+num_workers = mp.cpu_count() - 1
+print('Starting a pool with {} workers'.format(num_workers))
+with mp.Pool(processes=num_workers) as pool:
+    pool.map(do_the_work, list(range(expected_dat)))
 
+print('All done! Congratulations!')
