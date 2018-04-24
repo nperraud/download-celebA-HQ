@@ -64,8 +64,7 @@ class ThreadPool(object):
             while retire_idx[0] < len(results) and results[retire_idx[0]] is not None:
                 yield post_func(results[retire_idx[0]])
                 results[retire_idx[0]] = None
-                retire_idx[0] += 1
-    
+                retire_idx[0] += 1  
         for idx, item in enumerate(item_iterator):
             prepared = pre_func(item)
             results.append(None)
