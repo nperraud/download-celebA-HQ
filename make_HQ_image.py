@@ -232,7 +232,7 @@ def process_func(idx):
 
 num_threads=num_tasks
 with ThreadPool(num_threads) as pool:
-    for img_num, img in enumerate(pool.process_items_concurrently(indices[order].tolist(), process_func=process_func, max_items_in_flight=num_tasks)):
+    for img_num, img in enumerate(pool.process_items_concurrently(indices.tolist(), process_func=process_func, max_items_in_flight=num_tasks)):
         print('Create image number {}'.format(img_num))
         img = process_func(img_num)
         np.save(os.path.join(delta_dir, 'imgHQ%05d' % img_num), [img])
