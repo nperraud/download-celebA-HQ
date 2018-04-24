@@ -1,6 +1,5 @@
 import zipfile
 import os
-import sys
 import requests
 import argparse
 
