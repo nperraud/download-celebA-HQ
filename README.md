@@ -1,6 +1,10 @@
 # download-celebA-HQ
 Python script to download and create the celebA-HQ dataset.
 
+To get the celebA-HQ dataset, you need to 
+ a) download the celebA dataset `download_celebA.py` ,
+ b) download some extra files `download_celebA_HQ.py`,
+ c) do some processing to get the HQ images `make_HQ_images.py`.
 
 
 # Usage
@@ -28,12 +32,26 @@ cd download-celebA-HQ
  	sudo apt-get install p7zip-full
  ```
 
-3) Run the script
+3) Run the scripts
 ```
-python download.py ./
+python download_celebA.py ./
+python download_celebA_HQ.py ./
+python make_HQ_images.py ./
+
 ```
 where `./` is the directory where you wish the data to be saved.
+
+4) Go watch a movie, theses scripts will take a few hours to run depending on your internet connection and your CPU power. The final HQ images will be saved as `.npy` files in the `./celebA-HQ` folder.
 
 
 # Remark
 This script is likely to break somewhere, but if it executes until the end, you should obtain the correct dataset.
+
+# Sources
+This code is inspired by these files
+* https://github.com/tkarras/progressive_growing_of_gans/blob/master/dataset_tool.py
+* https://github.com/andersbll/deeppy/blob/master/deeppy/dataset/celeba.py
+* https://github.com/andersbll/deeppy/blob/master/deeppy/dataset/util.py
+
+# Citing the dataset
+You probably want to cite the paper "Progressive Growing of GANs for Improved Quality, Stability, and Variation" that was submitted to ICLR 2018 by Tero Karras (NVIDIA), Timo Aila (NVIDIA), Samuli Laine (NVIDIA), Jaakko Lehtinen (NVIDIA and Aalto University).

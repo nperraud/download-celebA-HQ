@@ -13,11 +13,20 @@ import bz2
 import scipy
 from scipy import ndimage
 import multiprocessing as mp
+import argparse
 
+# This code is inspired by
+# https://github.com/tkarras/progressive_growing_of_gans/blob/master/dataset_tool.py
 
-dataset_dir='celeba'
+parser = argparse.ArgumentParser(description='Download celebA-HQ helper')
+parser.add_argument('path', type=str)
+
+args = parser.parse_args()
+dirpath = args.path
+
+dataset_dir = os.path.join(dirpath, 'celebA')
 expected_images = 202599
-delta_dir = 'celebA-HQ'
+delta_dir = os.path.join(dirpath, 'celebA-HQ')
 
 celeba_dir = os.path.join(dataset_dir, 'Img/img_celeba')
 print('Loading CelebA from {}'.format(celeba_dir))
@@ -54,10 +63,6 @@ md5 = hashlib.md5()
 md5.update(img.tobytes())
 if md5.hexdigest() != '9cad8178d6cb0196b36f7b34bc5eb6d3':
     raise ValueError('create_celebahq requires libjpeg version 8d') # conda install jpeg=8d
-
-
-
-
 
 def rot90(v):
     return np.array([-v[1], v[0]])
@@ -153,9 +158,14 @@ def do_the_work(img_num):
 
 # for img_num in range(expected_dat):
 #     do_the_work(img_num)
+
 num_workers = mp.cpu_count() - 1
 print('Starting a pool with {} workers'.format(num_workers))
 with mp.Pool(processes=num_workers) as pool:
     pool.map(do_the_work, list(range(expected_dat)))
 
+print('Images created! Start cleaning dat files.')
+# Remove the dat files
+for filepath in glob.glob(os.path.join(delta_dir, '*.dat')):
+    os.remove(filepath)
 print('All done! Congratulations!')

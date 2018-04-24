@@ -9,7 +9,10 @@ if sys.version_info[0] > 2:
 else:
     from urllib import urlretrieve
 from subprocess import Popen
+import argparse
 
+parser = argparse.ArgumentParser(description='Download celebA helper')
+parser.add_argument('path', type=str)
 
 def require_dir(path):
     if not os.path.exists(path):
@@ -82,8 +85,7 @@ def archive_extract(filepath, target_dir):
         raise ValueError('{} is not a supported archive file.'.format(filepath))
 
 
-def download_celabA(dataset_dir='celeba'):
-    # dataset_dir='celeba'
+def download_celabA(dataset_dir):
 
     _IMGS_URL = ('https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAAq9krDJxUMh1m0hbbxdnl4a/Img/img_celeba.7z?dl=1',
         '37af560349c7d2e51fcc4461168452c743c9cb96')
@@ -175,4 +177,7 @@ def download_celabA(dataset_dir='celeba'):
 return True
 
 if __name__ == '__main__':
-    download_celabA()
+    args = parser.parse_args()
+    dirpath = args.path
+    dataset_dir = os.path.join(dirpath, 'celebA')
+    download_celabA(dataset_dir)
