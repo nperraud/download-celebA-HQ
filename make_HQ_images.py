@@ -163,8 +163,8 @@ num_workers = mp.cpu_count() - 1
 print('Starting a pool with {} workers'.format(num_workers))
 with mp.Pool(processes=num_workers) as pool:
     pool.map(do_the_work, list(range(expected_dat)))
-
-print('Images created! Start cleaning dat files.')
+if len(glob.glob(os.path.join(delta_dir, '*.npy'))) != 30000:
+    raise ValueError('Expected to find {} npy files\n Something went wrong!'.format(30000))
 # Remove the dat files
 for filepath in glob.glob(os.path.join(delta_dir, '*.dat')):
     os.remove(filepath)
