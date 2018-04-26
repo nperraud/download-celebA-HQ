@@ -17,7 +17,6 @@ import argparse
 
 # This code is inspired by
 # https://github.com/tkarras/progressive_growing_of_gans/blob/master/dataset_tool.py
-
 parser = argparse.ArgumentParser(description='Download celebA-HQ helper')
 parser.add_argument('path', type=str)
 
