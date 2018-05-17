@@ -174,7 +174,7 @@ def download_celabA(dataset_dir):
     n_imgsd = sum([1 for file in os.listdir(img_dir) if file[-4:] == '.jpg'])
     assert (n_imgsd == n_imgs)
 
-return True
+    return True
 
 if __name__ == '__main__':
     args = parser.parse_args()
