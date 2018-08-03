@@ -14,7 +14,7 @@ git clone https://github.com/nperraud/download-celebA-HQ.git
 cd download-celebA-HQ
 ```
 
-2) Install necessary packages (Becase specific versions are required Conda is recomended)
+2) Install necessary packages (Because specific versions are required Conda is recomended)
  * Install miniconda https://conda.io/miniconda.html
  * Create a new environement
  ```

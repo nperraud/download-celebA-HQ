@@ -4,6 +4,8 @@ import gzip
 import os
 import hashlib
 import sys
+from glob import glob
+
 if sys.version_info[0] > 2:
     from urllib.request import urlretrieve
 else:
@@ -203,7 +205,7 @@ def download_celabA(dataset_dir):
             print('Remove: {}'.format(filepath))
             os.remove(filepath)
 
-    n_imgsd = sum([1 for file in os.listdir(img_dir) if file[-4:] == '.jpg'])
+    n_imgsd = len(glob(os.path.join(img_dir, '*.jpg')))
     assert (n_imgsd == n_imgs)
 
     return True
