@@ -42,6 +42,8 @@ where `./` is the directory where you wish the data to be saved.
 
 4) Go watch a movie, theses scripts will take a few hours to run depending on your internet connection and your CPU power. The final HQ images will be saved as `.npy` files in the `./celebA-HQ` folder.
 
+# Outliers
+It seems that the dataset has a few outliers. A of problematic images is stored in `bad_images.txt`. Please report if you find other outliers.
 
 # Remark
 This script is likely to break somewhere, but if it executes until the end, you should obtain the correct dataset.
