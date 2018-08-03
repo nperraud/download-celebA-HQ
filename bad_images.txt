@@ -1,2 +1,2 @@
-70
-2815
+imgHQ00070.npy
+imgHQ02815.npy
