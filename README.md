@@ -42,6 +42,14 @@ where `./` is the directory where you wish the data to be saved.
 
 4) Go watch a movie, theses scripts will take a few hours to run depending on your internet connection and your CPU power. The final HQ images will be saved as `.npy` files in the `./celebA-HQ` folder.
 
+## Docker
+
+If you have Docker installed, skip the previous installation steps and run the following command from the root directory of this project:
+
+`docker build -t celeba . && docker run -it -v $(pwd):/data celeba`
+
+By default, this will create the dataset in same directory. To put it elsewhere, replace `$(pwd)` with the absolute path to the desired output directory.
+
 # Outliers
 It seems that the dataset has a few outliers. A of problematic images is stored in `bad_images.txt`. Please report if you find other outliers.
 
