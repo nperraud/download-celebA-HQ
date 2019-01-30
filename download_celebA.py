@@ -12,6 +12,7 @@ else:
     from urllib import urlretrieve
 from subprocess import Popen
 import argparse
+from download_celebA_HQ import download_file_from_google_drive
 
 parser = argparse.ArgumentParser(description='Download celebA helper')
 parser.add_argument('path', type=str)
@@ -87,39 +88,101 @@ def archive_extract(filepath, target_dir):
         raise ValueError('{} is not a supported archive file.'.format(filepath))
 
 
+def download_and_check(drive_data, path):
+    save_paths = list()
+    n_files = len(drive_data["filenames"])
+    for i in range(n_files):
+        drive_id = drive_data["drive_ids"][i]
+        filename = drive_data["filenames"][i]
+        save_path = os.path.join(path, filename)
+        require_dir(os.path.dirname(save_path))
+        print('Downloading {} to {}'.format(filename, save_path))
+        download_file_from_google_drive(drive_id, save_path)
+        print('Done!')
+        if "sha1" in drive_data:
+            sha1 = drive_data["sha1"][i]
+            print('Check SHA1 {}'.format(save_path))
+            if sha1 != checksum(save_path, 'sha1'):
+                raise RuntimeError('Checksum mismatch for %s.' % save_path)
+        save_paths.append(save_path)
+    return save_paths
+
+
 def download_celabA(dataset_dir):
+    _IMGS_DRIVE = dict(
+            filenames = [
+                'img_celeba.7z.001', 'img_celeba.7z.002', 'img_celeba.7z.003',
+                'img_celeba.7z.004', 'img_celeba.7z.005', 'img_celeba.7z.006',
+                'img_celeba.7z.007', 'img_celeba.7z.008', 'img_celeba.7z.009',
+                'img_celeba.7z.010', 'img_celeba.7z.011', 'img_celeba.7z.012',
+                'img_celeba.7z.013', 'img_celeba.7z.014'
+                ],
+            drive_ids = [
+                '0B7EVK8r0v71pQy1YUGtHeUM2dUE', '0B7EVK8r0v71peFphOHpxODd5SjQ',
+                '0B7EVK8r0v71pMk5FeXRlOXcxVVU', '0B7EVK8r0v71peXc4WldxZGFUbk0',
+                '0B7EVK8r0v71pMktaV1hjZUJhLWM', '0B7EVK8r0v71pbWFfbGRDOVZxOUU',
+                '0B7EVK8r0v71pQlZrOENSOUhkQ3c', '0B7EVK8r0v71pLVltX2F6dzVwT0E',
+                '0B7EVK8r0v71pVlg5SmtLa1ZiU0k', '0B7EVK8r0v71pa09rcFF4THRmSFU',
+                '0B7EVK8r0v71pNU9BZVBEMF9KN28', '0B7EVK8r0v71pTVd3R2NpQ0FHaGM',
+                '0B7EVK8r0v71paXBad2lfSzlzSlk', '0B7EVK8r0v71pcTFwT1VFZzkzZk0'
+                ]
+            )
 
-    _IMGS_URL = ('https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAAq9krDJxUMh1m0hbbxdnl4a/Img/img_celeba.7z?dl=1',
-        '37af560349c7d2e51fcc4461168452c743c9cb96')
+    _ALIGNED_IMGS_DRIVE = dict(
+            filenames = [
+                'img_align_celeba.zip'
+                ],
+            drive_ids = [
+                '0B7EVK8r0v71pZjFTYXZWM3FlRnM'
+                ],
+            sha1 = [
+                'b7e1990e1f046969bd4e49c6d804b93cd9be1646'
+                ]
+            )
 
-    _ALIGNED_IMGS_URL = (
-        'https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AADIKlz8PR9zr6Y20qbkunrba/Img/img_align_celeba.zip?dl=1',
-        'b7e1990e1f046969bd4e49c6d804b93cd9be1646')
+    _PARTITIONS_DRIVE = dict(
+            filenames = [
+                'Eval/list_eval_partition.txt'
+                ],
+            drive_ids = [
+                '0B7EVK8r0v71pY0NSMzRuSXJEVkk'
+                ],
+            sha1 = [
+                'fb3d89825c49a2d389601eacb10d73815fd3c52d'
+                ]
+            )
 
-    _PARTITIONS_URL = (
-        'https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AADxLE5t6HqyD8sQCmzWJRcHa/Eval/list_eval_partition.txt?dl=1',
-        'fb3d89825c49a2d389601eacb10d73815fd3c52d')
+    _ALIGNED_ATTRIBUTES_DRIVE = dict(
+            filenames = [
+                'Anno/list_attr_celeba.txt'
+                ],
+            drive_ids = [
+                '0B7EVK8r0v71pblRyaVFSWGxPY0U'
+                ],
+            sha1 = [
+                '225788ff6c9d0b96dc21144147456e0388195617'
+                ]
+            )
 
-    _ALIGNED_ATTRIBUTES_URL = (
-        'https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAC7-uCaJkmPmvLX2_P5qy0ga/Anno/list_attr_celeba.txt?dl=1',
-        '225788ff6c9d0b96dc21144147456e0388195617')
-
-    _ATTRIBUTES_URL = (
-        'https://www.dropbox.com/sh/8oqt9vytwxb3s4r/AAANSiC4E2KoizMw92lvJTOta/Anno/list_landmarks_celeba.txt?dl=1',
-        'ea255cd0ffe98ca88bff23767f7a5ece7710db57')
+    _ATTRIBUTES_DRIVE = dict(
+            filenames = [
+                'Anno/list_landmarks_celeba.txt'
+                ],
+            drive_ids = [
+                '0B7EVK8r0v71pTzJIdlJWdHczRlU'
+                ],
+            sha1 = [
+                'ea255cd0ffe98ca88bff23767f7a5ece7710db57'
+                ]
+            )
 
     n_imgs = 202599
     img_dir_align = os.path.join(dataset_dir, 'Img', 'img_align_celeba')
     img_dir = os.path.join(dataset_dir, 'Img', 'img_celeba')
 
-    url, sha1 = _ALIGNED_IMGS_URL
-    print('Downloading {}'.format(url))
-    filepath = download(url, dataset_dir)
-    print('Done!')
-    print('Check SHA1 {}'.format(filepath))
-    if sha1 != checksum(filepath, 'sha1'):
-        raise RuntimeError('Checksum mismatch for %s.' % url)
+    filepaths = download_and_check(_ALIGNED_IMGS_DRIVE, dataset_dir)
 
+    filepath = filepaths[0]
     print('Extract archive {}'.format(filepath))
     archive_extract(filepath, os.path.join(dataset_dir, 'Img'))
     print('Done!')
@@ -128,82 +191,21 @@ def download_celabA(dataset_dir):
     n_imgsd = sum([1 for file in os.listdir(img_dir_align) if file[-4:] == '.jpg'])
     assert (n_imgsd == n_imgs)
 
-    url, sha1 = _PARTITIONS_URL
-    print('Downloading {}'.format(url))
-    filepath = download(url, os.path.join(dataset_dir,'Eval'))
-    print('Done!')
-    print('Check SHA1 {}'.format(filepath))
-    if sha1 != checksum(filepath, 'sha1'):
-        raise RuntimeError('Checksum mismatch for %s.' % url)
+    filepaths = download_and_check(_PARTITIONS_DRIVE, os.path.join(dataset_dir,'Eval'))
 
-    url, sha1 = _ATTRIBUTES_URL
-    print('Downloading {}'.format(url))
-    filepath = download(url, os.path.join(dataset_dir,'Anno'))
-    print('Done!')
-    print('Check SHA1 {}'.format(filepath))
-    if sha1 != checksum(filepath, 'sha1'):
-        raise RuntimeError('Checksum mismatch for %s.' % url)
+    filepaths = download_and_check(_ATTRIBUTES_DRIVE, os.path.join(dataset_dir,'Anno'))
 
-    url, sha1 = _ALIGNED_ATTRIBUTES_URL
-    print('Downloading {}'.format(url))
-    filepath = download(url, os.path.join(dataset_dir,'Anno'))
-    print('Done!')
-    print('Check SHA1 {}'.format(filepath))
-    if sha1 != checksum(filepath, 'sha1'):
-        raise RuntimeError('Checksum mismatch for %s.' % url)
+    filepaths = download_and_check(_ALIGNED_ATTRIBUTES_DRIVE, os.path.join(dataset_dir,'Anno'))
 
-    url, sha1 = _IMGS_URL
-    try: 
-        print('Downloading {}'.format(url))
-        filepath = download(url, dataset_dir)
-        print('Done!')
-        print('Check SHA1 {}'.format(filepath))
-        if sha1 != checksum(filepath, 'sha1'):
-            raise RuntimeError('Checksum mismatch for %s.' % url)
-        print('Extract archive {}'.format(filepath))
-        archive_extract(filepath, dataset_dir)
-    except:
-        try:
-            os.remove(filepath)
-        except:
-            print('Something is fishy')
-        import download_celebA_HQ
-        print('2nd try Downloading {}'.format('img_celeba.7z'))
-
-        filenames = [
-            'img_celeba.7z.001', 'img_celeba.7z.002', 'img_celeba.7z.003',
-            'img_celeba.7z.004', 'img_celeba.7z.005', 'img_celeba.7z.006',
-            'img_celeba.7z.007', 'img_celeba.7z.008', 'img_celeba.7z.009',
-            'img_celeba.7z.010', 'img_celeba.7z.011', 'img_celeba.7z.012',
-            'img_celeba.7z.013', 'img_celeba.7z.014'
-        ]
-        drive_ids = [
-            '0B7EVK8r0v71pQy1YUGtHeUM2dUE', '0B7EVK8r0v71peFphOHpxODd5SjQ',
-            '0B7EVK8r0v71pMk5FeXRlOXcxVVU', '0B7EVK8r0v71peXc4WldxZGFUbk0',
-            '0B7EVK8r0v71pMktaV1hjZUJhLWM', '0B7EVK8r0v71pbWFfbGRDOVZxOUU',
-            '0B7EVK8r0v71pQlZrOENSOUhkQ3c', '0B7EVK8r0v71pLVltX2F6dzVwT0E',
-            '0B7EVK8r0v71pVlg5SmtLa1ZiU0k', '0B7EVK8r0v71pa09rcFF4THRmSFU',
-            '0B7EVK8r0v71pNU9BZVBEMF9KN28', '0B7EVK8r0v71pTVd3R2NpQ0FHaGM',
-            '0B7EVK8r0v71paXBad2lfSzlzSlk', '0B7EVK8r0v71pcTFwT1VFZzkzZk0'
-        ]
-
-        for filename, drive_id in zip(filenames, drive_ids):
-            save_path = os.path.join(dataset_dir, filename)
-            download_celebA_HQ.download_file_from_google_drive(drive_id, save_path)
-
-        print('Done!')
-        print('Extract archive {}'.format(filepath))
-
-
-    filepath = os.path.join(dataset_dir, 'img_celeba.7z.001')
+    filepaths = download_and_check(_IMGS_DRIVE, dataset_dir)
+    filepath = filepaths[0]
+    print('Extract archive {}'.format(filepath))
     archive_extract(filepath, os.path.join(dataset_dir, 'Img'))
     print('Done!')
 
-    for file in os.listdir(dataset_dir):
-        if file[:14] == 'img_celeba.7z.':
-            filepath = os.path.join(dataset_dir, file)
-            print('Remove: {}'.format(filepath))
-            os.remove(filepath)
+    for filepath in filepaths:
+        print('Remove: {}'.format(filepath))
+        os.remove(filepath)
 
     n_imgsd = len(glob(os.path.join(img_dir, '*.jpg')))
     assert (n_imgsd == n_imgs)
