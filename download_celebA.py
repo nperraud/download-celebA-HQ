@@ -191,11 +191,11 @@ def download_celabA(dataset_dir):
     n_imgsd = sum([1 for file in os.listdir(img_dir_align) if file[-4:] == '.jpg'])
     assert (n_imgsd == n_imgs)
 
-    filepaths = download_and_check(_PARTITIONS_DRIVE, os.path.join(dataset_dir,'Eval'))
+    filepaths = download_and_check(_PARTITIONS_DRIVE, dataset_dir)
 
-    filepaths = download_and_check(_ATTRIBUTES_DRIVE, os.path.join(dataset_dir,'Anno'))
+    filepaths = download_and_check(_ATTRIBUTES_DRIVE, dataset_dir)
 
-    filepaths = download_and_check(_ALIGNED_ATTRIBUTES_DRIVE, os.path.join(dataset_dir,'Anno'))
+    filepaths = download_and_check(_ALIGNED_ATTRIBUTES_DRIVE, dataset_dir)
 
     filepaths = download_and_check(_IMGS_DRIVE, dataset_dir)
     filepath = filepaths[0]
