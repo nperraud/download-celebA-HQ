@@ -6,6 +6,7 @@ To get the celebA-HQ dataset, you need to
  b) download some extra files `download_celebA_HQ.py`,
  c) do some processing to get the HQ images `make_HQ_images.py`.
 
+The size of the final dataset is 89G. However, you will need a bit more storage to be able to run the scripts.
 
 # Usage
 1) Clone the repository
