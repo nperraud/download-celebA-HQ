@@ -43,6 +43,24 @@ where `./` is the directory where you wish the data to be saved.
 
 4) Go watch a movie, theses scripts will take a few hours to run depending on your internet connection and your CPU power. The final HQ images will be saved as `.npy` files in the `./celebA-HQ` folder.
 
+## Windows
+The script may work on windows, though I have not tested this solution personnaly
+
+Step 2 becomes
+ * Install miniconda https://conda.io/miniconda.html or anaconda
+ * Create a new environement
+ ```
+ conda create -n celebaHQ python=3
+ source activate celebaHQ
+ ```
+ * Install the packages
+ ```
+ conda  install -c anaconda jpeg=8d tqdm requests pillow==3.1.1 urllib3 numpy cryptography scipy
+  ```
+ * Install 7zip 
+
+The rest should be unchanged.
+
 ## Docker
 
 If you have Docker installed, skip the previous installation steps and run the following command from the root directory of this project:
