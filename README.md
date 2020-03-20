@@ -1,6 +1,8 @@
 # download-celebA-HQ
 Python script to download and create the celebA-HQ dataset.
 
+**WARNING from the author.** I believe this script is broken since a few months (I have not try it for a while). I am really sorry about that. If you fix it, please share you solution in a PR so that everyone can benefit from it. 
+
 To get the celebA-HQ dataset, you need to 
  a) download the celebA dataset `download_celebA.py` ,
  b) download some extra files `download_celebA_HQ.py`,
